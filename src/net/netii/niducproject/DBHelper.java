@@ -1,15 +1,5 @@
 package net.netii.niducproject;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -25,12 +15,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	public static final String CARD_PAID = "card_paid";
 	public static final String SIZE = "shopping_size";
 	public static final String DATE = "shopping_date";
-	public static final String TIME = "shopping_time";
-	
-	private HttpClient httpclient;
-	private HttpPost httppost;
-	private List<NameValuePair> nameValuePairs;		
-	
+	public static final String TIME = "shopping_time";	
 	
 	public DBHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);		
@@ -72,30 +57,9 @@ public class DBHelper extends SQLiteOpenHelper {
 		}catch(SQLiteException ex){
 			Log.i("sql", ex.getMessage());
 			return "Database error";
-		}
-       
-        httpclient = new DefaultHttpClient();
-        	
-        httppost = new HttpPost("http://niducproject.netii.net/index.php");
+		}           
             
-        nameValuePairs = new ArrayList<NameValuePair>(2);
-        nameValuePairs.add(new BasicNameValuePair("cashdesk_id", cashdeskId));
-        nameValuePairs.add(new BasicNameValuePair("card_paid", cardPaid));
-        nameValuePairs.add(new BasicNameValuePair("shopping_size", size));
-        nameValuePairs.add(new BasicNameValuePair("shopping_date", date));
-        nameValuePairs.add(new BasicNameValuePair("shopping_time", time));        
-            
-        Thread t = new Thread(new Runnable() {
-        	public void run() {
-				try {
-					httppost.setEntity(new UrlEncodedFormEntity(DBHelper.this.nameValuePairs));
-					DBHelper.this.httpclient.execute(DBHelper.this.httppost);				
-				}catch(Exception e){
-		        	Log.i("sql", e.getMessage());		        
-				}
-			}
-		});
-        t.start();
+		new DataSenderThread(cashdeskId, cardPaid, size, date, time);
 		return query;
 	}
 }
