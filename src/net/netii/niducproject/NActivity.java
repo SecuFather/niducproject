@@ -1,6 +1,7 @@
 package net.netii.niducproject;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -122,12 +123,13 @@ public class NActivity extends Activity implements OnClickListener{
     }
 
     public String generateStr(int at){
+    	Date d = Calendar.getInstance().getTime();
     	int size = shoppingSize[at].getCheckedRadioButtonId() % buttonsByRow - sizeB;
     	
     	return dbHelp.insertData(cashdeskId[at].getText().toString(),
     							 cardPaid[at].isChecked() ? "1" : "0",
     							 String.valueOf(size),
-    							 Calendar.getInstance().getTime().toString(),
+    							 (1900+d.getYear())+"-"+d.getMonth()+"-"+d.getDate()+" "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds(),
     							 String.valueOf(time[at]));    					
     }
 

@@ -3,6 +3,7 @@ package net.netii.niducproject;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -15,6 +16,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 public class DBHelper extends SQLiteOpenHelper {
 	public static final String DATABASE_NAME = "niduc_project_01.db";
@@ -75,8 +77,14 @@ public class DBHelper extends SQLiteOpenHelper {
             HttpPost httppost = new HttpPost("http://niducproject.netii.net/index.php");
             
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-            nameValuePairs.add(new BasicNameValuePair("query", query));            
-            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));                                          
+            nameValuePairs.add(new BasicNameValuePair("cashdesk_id", cashdeskId));
+            nameValuePairs.add(new BasicNameValuePair("card_paid", cardPaid));
+            nameValuePairs.add(new BasicNameValuePair("shopping_size", size));
+            nameValuePairs.add(new BasicNameValuePair("shopping_date", date));
+            nameValuePairs.add(new BasicNameValuePair("shopping_time", time));
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            
+            httpclient.execute(httppost);                    
         }catch(Exception e){
         	Log.i("sql", e.getMessage());
         }
